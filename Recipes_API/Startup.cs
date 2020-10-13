@@ -31,7 +31,9 @@ namespace Recipes_API
             //Cashing
             services.AddResponseCaching();
 
-            services.AddDbContext<RecipesDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("CinemaDbConnection")));
+            services.AddDbContext<RecipesDbContext>(option => option.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Integrated Security=True;Initial Catalog=RecipesDb;"));
+
+            //services.AddDbContext<RecipesDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("CinemaDbConnection")));
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
