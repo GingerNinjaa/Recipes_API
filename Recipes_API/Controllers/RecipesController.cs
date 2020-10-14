@@ -9,6 +9,8 @@ using Recipes_API.Data;
 
 namespace Recipes_API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class RecipesController : Controller
     {
         private RecipesDbContext _dbContext;
@@ -18,7 +20,8 @@ namespace Recipes_API.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
+        [HttpGet]
         [HttpGet("[action]")]
         [ResponseCache(Duration = 360, Location = ResponseCacheLocation.Any)]
         public IActionResult AllRecepies(int? pageNumber, int? pageSize)
@@ -27,17 +30,44 @@ namespace Recipes_API.Controllers
             var currentPageNumber = pageNumber ?? 1;
             var currentPageSize = pageSize ?? 5;
 
-            var recepies = this._dbContext.Recipes.Include(x => x.Ingredients);
+            var recepies = this._dbContext.Recipes
+                .Include(x => x.Ingredients)
+                .Include(c=>c.PreparationSteps);
 
             return Ok(recepies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
         }
 
-        [Authorize]
-        [HttpGet("[action]/{id}")]
+        //[Authorize]
+        [HttpGet]
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 360, Location = ResponseCacheLocation.Any)]
+        public IActionResult AllRecepiesPartial(int? pageNumber, int? pageSize)
+        {
+            //Paginacja
+            var currentPageNumber = pageNumber ?? 1;
+            var currentPageSize = pageSize ?? 5;
+
+            var recepies = from recipe in _dbContext.Recipes  select new
+            {
+                    Id = recipe.Id,
+                    Title = recipe.Title,
+                    ImageUrl = recipe.ImageUrl,
+                    PreparationTime = recipe.PreparationTime, 
+                    Difficulty = recipe.Difficulty
+            };
+
+            return Ok(recepies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
+        }
+
+        //[Authorize]
+        [HttpGet("{id}")]
         [ResponseCache(Duration = 360, Location = ResponseCacheLocation.Any)]
         public IActionResult RecepieDetail(int id)
         {
-            var recipe = _dbContext.Recipes.Find(id);
+            //var recipe = _dbContext.Recipes.Find(id);
+            var recipe = this._dbContext.Recipes
+                .Include(x => x.Ingredients)
+                .Include(c => c.PreparationSteps).Where(v =>v.Id.Equals(id));
 
             if (recipe == null)
             {
@@ -63,5 +93,7 @@ namespace Recipes_API.Controllers
 
             return Ok(recepies);
         }
+
+
     }
 }

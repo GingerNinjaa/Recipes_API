@@ -17,8 +17,7 @@ namespace Recipes_API.Models
         public string ImageUrl { get; set; }
         public int PreparationTime { get; set; }
         public int CookingTime { get; set; }
-        public int People { get; set; } 
-        public string Preparation { get; set; }
+        public int People { get; set; }
         [MaxLength(50)]
         public string Difficulty { get; set; }
         [MaxLength(50)]
@@ -26,6 +25,9 @@ namespace Recipes_API.Models
         // one Recipe
         // to many Ingredients
         public ICollection<Ingredients> Ingredients { get; set; }
+        // one Recipe
+        // to many PreparationStep
+        public ICollection<PreparationSteps> PreparationSteps { get; set; }
 
     }
 }

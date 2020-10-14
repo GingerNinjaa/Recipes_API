@@ -12,6 +12,8 @@ namespace Recipes_API.Data
 
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Ingredients> Ingredientses { get; set; }
+        public DbSet<PreparationSteps> PreparationStepses { get; set; }
         public DbSet<User> Users { get; set; }
+        
     }
 }

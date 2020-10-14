@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recipes_API.Data;
 
 namespace Recipes_API.Migrations
 {
     [DbContext(typeof(RecipesDbContext))]
-    partial class RecipesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201014173948_Adding_Preparation_steps")]
+    partial class Adding_Preparation_steps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,7 +70,7 @@ namespace Recipes_API.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("PreparationStepses");
+                    b.ToTable("PreparationSteps");
                 });
 
             modelBuilder.Entity("Recipes_API.Models.Recipe", b =>
@@ -99,6 +101,9 @@ namespace Recipes_API.Migrations
 
                     b.Property<int>("People")
                         .HasColumnType("int");
+
+                    b.Property<string>("Preparation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PreparationTime")
                         .HasColumnType("int");
