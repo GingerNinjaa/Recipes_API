@@ -12,5 +12,6 @@ namespace Recipes_API.Models
         public int StepNumber { get; set; }
         [MaxLength(350)]
         public string Text { get; set; }
+        public int RecipeId { get; set; }
     }
 }

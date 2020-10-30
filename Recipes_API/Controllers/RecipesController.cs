@@ -52,7 +52,8 @@ namespace Recipes_API.Controllers
                     Id = recipe.Id,
                     Title = recipe.Title,
                     ImageUrl = recipe.ImageUrl,
-                    PreparationTime = recipe.PreparationTime, 
+                    PreparationTime = recipe.PreparationTime,
+                    Category = recipe.Category,
                     Difficulty = recipe.Difficulty
             };
 
@@ -60,7 +61,7 @@ namespace Recipes_API.Controllers
         }
 
         //[Authorize]
-        [HttpGet("{id}")]
+        [HttpGet("[action]/{id}")]
         [ResponseCache(Duration = 360, Location = ResponseCacheLocation.Any)]
         public IActionResult RecepieDetail(int id)
         {
@@ -77,7 +78,7 @@ namespace Recipes_API.Controllers
             return Ok(recipe);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("[action]")]
         [ResponseCache(Duration = 360, Location = ResponseCacheLocation.Any)]
         public IActionResult FindRecipe(string recipeName)
@@ -93,6 +94,29 @@ namespace Recipes_API.Controllers
 
             return Ok(recepies);
         }
+      
+        //[Authorize]
+        [HttpDelete("[action]/{id}")]
+        public IActionResult Delete(int id)
+        {
+            var recepieId = _dbContext.Recipes.Find(id);
+            var IngredientsesList = _dbContext.Ingredientses.Where(x => x.RecipeId.Equals(id)).ToList();
+            var PreparationStepsList = _dbContext.PreparationStepses.Where(x => x.RecipeId.Equals(id)).ToList();
+            if (recepieId == null)
+            {
+                return NotFound("No record found against this Id");
+            }
+            else
+            {
+                _dbContext.Recipes.Remove(recepieId);
+                _dbContext.Ingredientses.RemoveRange(IngredientsesList);
+                _dbContext.PreparationStepses.RemoveRange(PreparationStepsList);
+                _dbContext.SaveChanges();
+                return Ok("Record deleted");
+            }
+        }
+
+
 
 
     }

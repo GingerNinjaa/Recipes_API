@@ -14,5 +14,7 @@ namespace Recipes_API.Models
         public double Amount { get; set; }
         [MaxLength(100)]
         public string AmountDesc { get; set; }
+
+        public int RecipeId { get; set; }
     }
 }
