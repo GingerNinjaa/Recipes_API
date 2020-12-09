@@ -41,7 +41,8 @@ namespace Recipes_API.Controllers
             {
                 Name = user.Name,
                 Email = user.Email,
-                Password = SecurePasswordHasherHelper.Hash(user.Password),
+                // Password = SecurePasswordHasherHelper.Hash(user.Password)
+                Password = user.Password,
                 Role = "Users"
             };
             _dbContext.Users.Add(userObj);
@@ -59,7 +60,8 @@ namespace Recipes_API.Controllers
                 return NotFound();
             }
 
-            if (!SecurePasswordHasherHelper.Verify(user.Password, userEmail.Password))
+            // var password = SecurePasswordHasherHelper.Verify(user.Password);
+            if (userEmail.Password.Equals(user.Password) == false)
             {
                 return Unauthorized();
             }
@@ -85,6 +87,65 @@ namespace Recipes_API.Controllers
             });
         }
 
+        [Authorize]
+        [HttpPut]
+        public IActionResult Edit([FromBody] User user)
+        {
+            using (RecipesDbContext db = _dbContext)
+            {
+                var existingUser = db.Users.Where(u => u.Id == user.Id).FirstOrDefault();
+
+                if (user.Email != existingUser.Email &&
+                    user.Email.Trim() != "" &&
+                    db.Users.Any(x => x.Email.Equals(user.Email)) == false)
+                {
+                    existingUser.Email = user.Email;
+                }
+                else if (user.Email.Trim() == "")
+                {
+                    existingUser.Email = existingUser.Email;
+                }
+                else
+                {
+                    return NotFound("Email already exist in database");
+                }
+
+
+                if (user.Name != existingUser.Name &&
+                    user.Name.Trim() != "" &&
+                    db.Users.Any(x => !x.Name.Equals(user.Name)))
+                {
+                    existingUser.Name = user.Name;
+                }
+                else if (user.Name.Trim() == "")
+                {
+                    existingUser.Name = existingUser.Name;
+                }
+                else
+                {
+                    return NotFound("Name already exist in database");
+                }
+
+
+                if (user.Password.Trim() != "")
+                {
+
+                    existingUser.Password = user.Password;
+                }
+                else if (user.Password.Trim() == "")
+                {
+                    existingUser.Password = existingUser.Password;
+                }
+                else
+                {
+                    return NotFound("Password");
+                }
+
+                db.SaveChanges();
+                return StatusCode(StatusCodes.Status200OK);
+            }
+
+        }
 
 
     }

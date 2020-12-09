@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Recipes_API.Models
 {
@@ -22,12 +24,13 @@ namespace Recipes_API.Models
         public string Difficulty { get; set; }
         [MaxLength(50)]
         public string Category { get; set; }
-        // one Recipe
+        [NotMapped]
+        public IFormFile Image { get; set; }// one Recipe
         // to many Ingredients
         public ICollection<Ingredients> Ingredients { get; set; }
         // one Recipe
         // to many PreparationStep
         public ICollection<PreparationSteps> PreparationSteps { get; set; }
-
+        public int UserId { get; set; }
     }
 }

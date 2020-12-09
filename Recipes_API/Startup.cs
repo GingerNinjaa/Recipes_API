@@ -26,15 +26,13 @@ namespace Recipes_API
         {
             services.AddControllers();
 
-            services.AddMvc().AddXmlSerializerFormatters();
-
+            
             //Cashing
             services.AddResponseCaching();
 
             services.AddDbContext<RecipesDbContext>(option => option.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Integrated Security=True;Initial Catalog=RecipesDb;"));
 
-            //services.AddDbContext<RecipesDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("CinemaDbConnection")));
-            
+         
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -59,14 +57,15 @@ namespace Recipes_API
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseStaticFiles();
             //Cashing
             app.UseResponseCaching();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
